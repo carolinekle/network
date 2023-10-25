@@ -9,7 +9,10 @@ from .models import User, Post
 
 
 def index(request):
-    return render(request, "network/index.html")
+    posts = Post.objects.order_by('-created').all()
+    return render(request, "network/index.html",{
+        "posts":posts
+    })
 
 
 def login_view(request):
@@ -75,15 +78,10 @@ def all_posts(request):
         new_post.save()
 
         return HttpResponseRedirect(reverse("index"))
-    
-    if request.method == "GET":
-        posts = Post.objects.order_by('-created').all()
-        return render(request, "network/index.html",{
-            "posts":posts
-        })
 
     else:
         message = "The request is not valid."
         return JsonResponse({
             "message": message
             }, status=404)
+    
