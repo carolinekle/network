@@ -3,8 +3,9 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.http import JsonResponse
 
-from .models import User
+from .models import User, Post
 
 
 def index(request):
@@ -61,3 +62,28 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def all_posts(request):
+    if request.method == "POST":
+        text = request.POST["content"]
+        poster = request.user
+
+        new_post = Post(
+            text=text,
+            poster=poster
+        )
+        new_post.save()
+
+        return HttpResponseRedirect(reverse("index"))
+    
+    if request.method == "GET":
+        posts = Post.objects.order_by('-created').all()
+        return render(request, "network/index.html",{
+            "posts":posts
+        })
+
+    else:
+        message = "The request is not valid."
+        return JsonResponse({
+            "message": message
+            }, status=404)

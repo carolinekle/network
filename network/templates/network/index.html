@@ -1,7 +1,25 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    <div>
-        todo
-    </div>
+    <h1 class="mx-3">New Post</h1>
+
+    <form  action="{% url 'all_posts' %}" method="POST" class="mx-3 d-flex flex-column align-content-between" >
+        {% csrf_token %}
+        <input name="content" class="px-1"type="text"></input>
+        <input class="mt-2 x-25"type="submit"></input>
+
+    </form>
+
+    <h2 class="mx-3">Your posts<h2>
+        {% for post in posts %}
+        <div>
+            <h4>{{ post.poster }}</h4>
+            <p>{{ post.text }}</p>
+            <small>{{ post.created }}</small>
+
+            <button>Edit</button>
+            <button>Delete Post</button>
+        </div>
+
+     {% endfor %}
 {% endblock %}
