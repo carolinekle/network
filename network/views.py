@@ -4,14 +4,40 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import JsonResponse
+from django.core.paginator import Paginator
 
-from .models import User, Post
+from .models import User, Post, Following
 
 
 def index(request):
-    posts = Post.objects.order_by('-created').all()
+    all = Post.objects.order_by('-created').all()
+    posts = Paginator(all, 10)
+
+    page_number = request.GET.get("page")
+    page_obj = posts.get_page(page_number)
+
     return render(request, "network/index.html",{
-        "posts":posts
+        "posts":posts,
+        "page_obj": page_obj
+    })
+
+def profile(request, post_poster):
+    poster = User.objects.get(username=post_poster)
+    profile_posts = Post.objects.filter(poster=poster).order_by('-created').all()
+
+    following = Following.objects.filter(user_following=poster)
+    followers =Following.objects.filter(user_followed=poster)
+    
+    posts = Paginator(profile_posts, 10)
+
+    page_number = request.GET.get("page")
+    page_obj = posts.get_page(page_number)
+
+    return render(request, "network/profile.html",{
+        "profile":poster,
+        "page_obj": page_obj,
+        "following":following,
+        "followers":followers
     })
 
 

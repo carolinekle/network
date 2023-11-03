@@ -1,18 +1,17 @@
 {% extends "network/layout.html" %}
-
 {% block body %}
-    <h2 class="mx-3">New Post</h2>
-    {%if user.is_authenticated%}
-    <form  action="{% url 'all_posts' %}" method="POST" class="mx-3 " >
-        {% csrf_token %}
-        <textarea name="content" class="px-1 "type="text"></textarea>
-        <input class="mt-2 x-25 justify-content-center"type="submit"></input>
 
-    </form>
-    {% endif %}
+
+    <h2 class="mx-3">{{ profile.username }}</h2>
+
     <br>
-    <h2 class="mx-3">Your posts</h2>
-        {% for post in page_obj %}
+    <div class="d-flex justify-content-around ">
+        <h4>Following: {{ following.count }}</h4>
+        <h4>Followers:  {{ followers.count }}</h4>
+    </div>
+    <br>
+
+    {% for post in page_obj %}
         <div class="mx-3 my-3 d-flex flex-column post">
             <a href="{% url 'profile' post.poster %}"><h4>{{ post.poster }}</h4></a>
             <p>{{ post.text }}</p>
@@ -25,9 +24,10 @@
             {% endif %}
         </div>
 
-     {% endfor %}
+    {% endfor %}
 
-     <div class="pagination d-flex justify-content-center my-2">
+
+    <div class="pagination d-flex justify-content-center my-2">
         <span class="step-links">
             {% if page_obj.has_previous %}
                 <a href="?page=1">&laquo; first</a>
@@ -40,4 +40,6 @@
         {% endif %}
         </span>
     </div>
+
+
 {% endblock %}
