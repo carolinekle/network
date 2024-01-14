@@ -6,7 +6,7 @@
     <form  action="{% url 'all_posts' %}" method="POST" class="mx-3 " >
         {% csrf_token %}
         <textarea name="content" class="px-1 "type="text"></textarea>
-        <input class="mt-2 x-25 justify-content-center"type="submit"></input>
+        <input class="mt-2 x-25 justify-content-center btn btn-primary"type="submit"></input>
 
     </form>
     {% endif %}
@@ -19,9 +19,30 @@
             <small>{{ post.created }}</small>
             {% if post.poster == user %}
             <div class="flex-row">
-                <button>Edit</button>
-                <button>Delete Post</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#edited_{{ post.id }}">Edit</button>
+                <button type="button" class="btn btn-primary">Delete Post</button>
             </div>
+
+            <div class="modal fade" id="edited_{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle"> {{ post.poster }}</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <textarea class="modal-body" id="new_text">
+                        {{ post.text }}
+                    </textarea>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary dismiss" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary save">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
             {% endif %}
         </div>
 

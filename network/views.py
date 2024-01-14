@@ -110,4 +110,6 @@ def all_posts(request):
         return JsonResponse({
             "message": message
             }, status=404)
-    
+
+def edit_posts(request, post_id):
+    return HttpResponseRedirect(reverse("index"))
