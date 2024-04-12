@@ -6,6 +6,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.http import JsonResponse
 from django.core.paginator import Paginator
+import json
+from django.http import JsonResponse
 
 from .models import User, Post, Following
 
@@ -113,22 +115,6 @@ def all_posts(request):
             }, status=404)
 
 def edit_posts(request, post_id):
-    try:
-        post = Post.objects.get(user=request.user, pk=post_id)
-    except Post.DoesNotExist:
-        return JsonResponse({"error": "Email not found."}, status=404)
-
-
-    if request.method == "GET":
-        return JsonResponse(post.serialize())
-
-    # Update whether email is read or should be archived
-    elif request.method == "PUT":
-        data = json.loads(request.body)
-        if data.get("read") is not None:
-            post.read = data["read"]
-        if data.get("archived") is not None:
-            post.archived = data["archived"]
-        post.save()
-        return HttpResponse(status=204)
-    return HttpResponseRedirect(reverse("index"))
+    if request.method == "POST":
+        edited = Post.objects.get(pk=post_id)
+        return

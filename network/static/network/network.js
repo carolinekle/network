@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('#edits').addEventListener('click', save_edits);
+    const save = document.querySelector('#edit')
+    save.addEventListener('click', function(post_id){
 
-    function save_edits(event){
-
-        text=document.querySelector('#new_text').value
+        console.log("AND I DREAM EACH NIGHT OF SOME VERSION OF YOU");
+         text=document.querySelector('#new_text').value
         event.preventDefault();
-        fetch('/edit_posts', {
+        fetch('/edit_posts/${post_id}', {
         method: 'PUT',
         body: JSON.stringify({
             text: text
@@ -15,6 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(result => {
             console.log(text);
         });
-
-    }
+ 
+    })
 })
