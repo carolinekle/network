@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator
 import json
 from django.http import JsonResponse
+from django.views.decorators.http import require_GET, require_POST
 
 from .models import User, Post, Following
 
@@ -117,4 +118,11 @@ def all_posts(request):
 def edit_posts(request, post_id):
     if request.method == "POST":
         edited = Post.objects.get(pk=post_id)
-        return
+        data = json.loads(request.body)
+
+        if data.get("text") is not None:
+            edited.text = data["text"]
+            if data.get("updated") is not None:
+                edited.updated = data["updated"]
+            edited.save()
+            return HttpResponse(status=204)

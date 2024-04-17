@@ -3,18 +3,22 @@ document.addEventListener('DOMContentLoaded', function() {
     save.addEventListener('click', function(post_id){
 
         console.log("AND I DREAM EACH NIGHT OF SOME VERSION OF YOU");
-         text=document.querySelector('#new_text').value
-        event.preventDefault();
-        fetch('/edit_posts/${post_id}', {
-        method: 'PUT',
+         let text=document.querySelector('#new_text').value
+         let currentDate = new Date();
+
+        let currentDayOfMonth = currentDate.getDate();
+        let currentMonth = currentDate.getMonth(); 
+        let currentYear = currentDate.getFullYear();
+        let currentTime = currentDate.getTime();
+        let dateString = currentDayOfMonth  + (currentMonth + 1) + currentYear + currentTime;
+
+        fetch(`/edit_posts/${post_id}`, {
+        method: 'POST',
         body: JSON.stringify({
-            text: text
+            text: text,
+            updated: dateString
         })
         })
-        .then(response => response.json())
-        .then(result => {
-            console.log(text);
-        });
- 
+
     })
 })
