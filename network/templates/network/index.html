@@ -16,10 +16,10 @@
         {% for post in page_obj %}
         <div class="mx-3 my-3 d-flex flex-column post">
             <a href="{% url 'profile' post.poster %}"><h4>{{ post.poster }}</h4></a>
-            <p>{{ post.text }}</p>
+            <p id ="content_{{ post.id }}">{{ post.text }}</p>
             <small>{{ post.created }}</small>
             {% if post.edited %}
-            <small>{{ post.edited }}</small>
+            <small id="edited_date_{{ post.id }}">Updated on: {{ post.edited }}</small>
             {% endif %}
             {% if post.poster == user %}
             <div class="flex-row">
@@ -36,9 +36,7 @@
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
-                    <textarea rows="5" class="modal-body" id="new_text">
-                        {{ post.text }}
-                    </textarea>
+                    <textarea rows="5" class="modal-body" id="new_text">{{ post.text }}</textarea>
                     <div class="modal-footer">
                       
                       <button type="submit" value= {{ post.id }} id="edit" class="btn btn-primary">Save Changes</button>

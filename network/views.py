@@ -9,6 +9,8 @@ from django.core.paginator import Paginator
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
+from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import User, Post, Following
 
@@ -111,18 +113,30 @@ def all_posts(request):
 
     else:
         message = "The request is not valid."
-        return JsonResponse({
+        return JsonResponse({ 
             "message": message
             }, status=404)
 
 def edit_posts(request, post_id):
     if request.method == "POST":
-        edited = Post.objects.get(pk=post_id)
-        data = json.loads(request.body)
+        try:
+            edited = Post.objects.get(pk=post_id)
+        except ObjectDoesNotExist:
+            return JsonResponse({"error": "Post not found"}, status=404)
 
-        if data.get("text") is not None:
-            edited.text = data["text"]
+        try:
+            data = json.loads(request.body)
+            if data.get("text") is not None:
+                edited.text = data["text"]
             if data.get("updated") is not None:
-                edited.updated = data["updated"]
+                updated_datetime = timezone.now() 
+                edited.updated = updated_datetime
             edited.save()
-            return HttpResponse(status=204)
+            response_data = {
+                "message": "Change successful",
+                "text": edited.text,
+                "updated": edited.updated.strftime('%d %b %Y %H:%M')  
+            }
+            return JsonResponse(response_data)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
