@@ -13,6 +13,9 @@ class Post(models.Model):
     
     def __str__(self):
         return f"Post {self.id} by {self.poster} on {self.created.strftime('%d %b %Y %H:%M')}"
+    
+    def likes(self):
+        return Like.objects.filter(post_liked=self).count()
 
 
 class Following(models.Model):
@@ -21,3 +24,10 @@ class Following(models.Model):
 
     def __str__(self):
         return f"{self.user_following} is following {self.user_followed}"
+    
+class Like(models.Model):
+    liker = models.ForeignKey(User, on_delete=models.CASCADE, related_name="liker")
+    post_liked = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="post_liked")
+
+    def __str__(self):
+        return f"User {self.liker} liked {self.post_liked}"

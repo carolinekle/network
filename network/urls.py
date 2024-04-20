@@ -11,5 +11,6 @@ urlpatterns = [
     path("all_posts", views.all_posts, name="all_posts"),
     path("profile/<str:post_poster>", views.profile, name="profile"),
     #API Routes
-    path("edit_posts/<int:post_id>", views.edit_posts, name="edit")
+    path("edit_posts/<int:post_id>", views.edit_posts, name="edit"),
+    path("like/<int:post_id>", views.like, name="like")
 ]

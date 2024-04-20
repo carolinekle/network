@@ -12,7 +12,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 
-from .models import User, Post, Following
+from .models import User, Post, Following, Like
 
 
 def index(request):
@@ -140,3 +140,6 @@ def edit_posts(request, post_id):
             return JsonResponse(response_data)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data"}, status=400)
+
+def like(request, post_id):
+    return
