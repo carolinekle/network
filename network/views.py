@@ -142,4 +142,19 @@ def edit_posts(request, post_id):
             return JsonResponse({"error": "Invalid JSON data"}, status=400)
 
 def like(request, post_id):
-    return
+    if request.method == "POST":
+        try:
+            existing_like = Like.objects.get(pk=post_id)
+            data = json.loads(request.body)
+            # if data.get("liker") is not None:
+                # delete like 
+        except:
+            new_like = Like(
+                liker=request.user,
+                post_liked = post_id
+            )
+            new_like.save()
+            return JsonResponse(new_like)
+
+def follow(request, user_followed):
+    return 
