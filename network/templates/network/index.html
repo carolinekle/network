@@ -26,7 +26,7 @@
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#edited_{{ post.id }}">Edit</button>
                 <button type="button" class="btn btn-primary">Delete Post</button>
                 
-                <div class = "mt-1"> <button type="submit" id="like" class="btn btn-danger mr-2 like_{{ post.id }}">Like</button>{{ post.likes }} </div>
+                <div class = "mt-1"> <button type="submit" id="like" class="btn btn-danger mr-2 like_{{ post.id }}">Like</button><span class = "like_count_{{post.id}}">{{ post.likes }} </span></div>
             </div>
             
 

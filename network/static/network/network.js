@@ -1,10 +1,8 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-
-
     const save = document.querySelector('#edit')
-    const like =document.querySelector('#like')
+    const likeButtons =document.querySelectorAll('#like')
 
     function getCookie(name){
         const value = `; ${document.cookie}`;
@@ -12,25 +10,36 @@ document.addEventListener('DOMContentLoaded', function() {
         if(parts.length == 2) return parts.pop().split(';').shift();
     }
 
-    like.addEventListener('click', function (){
-        let post_id = this.value 
-        
-        let likedPost = document.querySelector(`#liked_${post_id}`)
-
-        fetch(`/like/${post_id}`, {
-            method: 'POST',
-            headers: {"Content-type": "application/json", "X-CSRFToken": getCookie("csrftoken")},
-            body: JSON.stringify({
-                liker: liker,
-                post_liked: likedPost
-            }),
+    likeButtons.forEach(btn =>{ 
+        btn.addEventListener('click', function (){
             
-        })
-        .then( response => response.json)
-        .then(result => 
+            let post_id = this.value 
+            let likedPost = document.querySelector(`#liked_${post_id}`)
 
-        console.log(result))
-    })
+
+            fetch(`/like/${post_id}`, {
+                method: 'POST',
+                headers: {"Content-type": "application/json", "X-CSRFToken": getCookie("csrftoken")},
+                body: JSON.stringify({
+                    post_liked: post_id
+                }),
+                
+            })
+            .then( response => response.json)
+            .then(data => {
+                if (data.message === 'like added') {
+                    this.textContent = 'Unlike';
+                } else if (data.message === 'like removed') {
+                    this.textContent = 'Like';
+                }
+                const likesCount = document.querySelector(`.like_count_${post_id}`);
+                likesCount.textContent = data.likes_count;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
 
     save.addEventListener('click', function(){
 

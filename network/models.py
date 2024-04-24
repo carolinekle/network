@@ -16,6 +16,9 @@ class Post(models.Model):
     
     def likes(self):
         return Like.objects.filter(post_liked=self).count()
+    
+    def user_likes(self):
+        return Like.objects.filter(post_liked=self).exists()
 
 
 class Following(models.Model):

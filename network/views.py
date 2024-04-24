@@ -143,18 +143,18 @@ def edit_posts(request, post_id):
 
 def like(request, post_id):
     if request.method == "POST":
-        try:
-            existing_like = Like.objects.get(pk=post_id)
-            data = json.loads(request.body)
-            # if data.get("liker") is not None:
-                # delete like 
-        except:
+        liker=request.user
+        existing_like = Like.objects.filter(post=post_id, liker=liker)
+        if existing_like is not None:
+            existing_like.delete()
+            return JsonResponse({"message":"like added"})
+        else:
             new_like = Like(
-                liker=request.user,
+                liker=liker,
                 post_liked = post_id
             )
             new_like.save()
-            return JsonResponse(new_like)
+            return JsonResponse({"message":"like added"})
 
 def follow(request, user_followed):
     return 
