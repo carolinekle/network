@@ -12,10 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     likeButtons.forEach(btn =>{ 
         btn.addEventListener('click', function (){
-            
-            let post_id = this.value 
-            let likedPost = document.querySelector(`#liked_${post_id}`)
-
+             
+            let post_id = this.value
 
             fetch(`/like/${post_id}`, {
                 method: 'POST',
@@ -25,20 +23,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 }),
                 
             })
-            .then( response => response.json)
-            .then(data => {
-                if (data.message === 'like added') {
-                    this.textContent = 'Unlike';
-                } else if (data.message === 'like removed') {
-                    this.textContent = 'Like';
+            .then(response => response.json())
+            .then(result => {
+                const button = document.querySelector(`.like_${post_id}`);
+                let count = document.querySelector(`.like_count_${post_id}`).value;
+                console.log(result)
+                if (result.message === 'like added') {
+                    button.innerHTML = 'Unlike';
+                    count.innerHTML =+ 1
+                } else if (result.message === 'like removed') {
+                    button.innerHTML = 'Like';
+                    count.innerHTML =- 1
                 }
-                const likesCount = document.querySelector(`.like_count_${post_id}`);
-                likesCount.textContent = data.likes_count;
+;
             })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
+
+        }); 
     });
 
     save.addEventListener('click', function(){

@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
 
 from .models import User, Post, Following, Like
 
@@ -143,18 +144,21 @@ def edit_posts(request, post_id):
 
 def like(request, post_id):
     if request.method == "POST":
-        liker=request.user
-        existing_like = Like.objects.filter(post=post_id, liker=liker)
-        if existing_like is not None:
+        liker = request.user
+        post = get_object_or_404(Post, pk=post_id)
+        existing_like = Like.objects.filter(post_liked=post, liker=liker).first()
+        if existing_like:
             existing_like.delete()
-            return JsonResponse({"message":"like added"})
+            return JsonResponse({"message": "like removed"})
         else:
             new_like = Like(
                 liker=liker,
-                post_liked = post_id
+                post_liked=post
             )
             new_like.save()
-            return JsonResponse({"message":"like added"})
+            return JsonResponse({"message": "like added"})
+    elif json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON data"}, status=400)
 
 def follow(request, user_followed):
     return 
