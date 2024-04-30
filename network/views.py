@@ -161,4 +161,19 @@ def like(request, post_id):
         return JsonResponse({"error": "Invalid JSON data"}, status=400)
 
 def follow(request, user_followed):
-    return 
+    if request.method == "POST":
+        follower = request.user
+        followed = user_followed
+        existing_follower = Following.objects.filter(user_follower=follower, user_followed=followed).first()
+        if existing_follower:
+            existing_follower.delete()
+            return JsonResponse({"message":"unfollowed"})
+        else:
+            new_follow= Following(
+                user_follower=follower,
+                user_followed=followed
+            )
+            new_follow.save()
+            return JsonResponse({"message":"followed"})
+    elif json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON data"}, status=400)

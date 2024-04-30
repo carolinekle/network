@@ -2,13 +2,41 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     const save = document.querySelector('#edit')
-    const likeButtons =document.querySelectorAll('#like')
+    const likeButtons = document.querySelectorAll('#like')
+    const followButton = document.querySelector('#follow')
 
     function getCookie(name){
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
         if(parts.length == 2) return parts.pop().split(';').shift();
     }
+
+    followButton.addEventListener('click', () => {
+        let user_followed = this.value
+
+        fetch(`/follow/${user_followed}`, {
+            method: 'POST',
+            headers: {"Content-type": "application/json", "X-CSRFToken": getCookie("csrftoken")},
+            body: JSON.stringify({
+                user_followed: user_followed
+            }),
+            
+        })
+        .then(response => response.json())
+        .then(result => {
+
+            if (result.message === 'followed') {
+                followButton.innerHTML = 'Unfollow';
+                //add 
+
+            } else if (result.message === 'unfollowed') {
+                followButton.innerHTML = 'Follow';
+            }
+        });
+
+    }); 
+
+
 
     likeButtons.forEach(btn =>{ 
         btn.addEventListener('click', function (){
@@ -25,18 +53,20 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(result => {
-                const button = document.querySelector(`.like_${post_id}`);
-                let count = document.querySelector(`.like_count_${post_id}`).value;
-                console.log(result)
+                let button = document.querySelector(`.like_${post_id}`);
+                let countElement = document.querySelector(`.like_count_${post_id}`);
+                let count = parseInt(countElement.innerHTML); 
+            
                 if (result.message === 'like added') {
                     button.innerHTML = 'Unlike';
-                    count.innerHTML =+ 1
+                    count += 1;
+                    countElement.innerHTML = count; 
                 } else if (result.message === 'like removed') {
                     button.innerHTML = 'Like';
-                    count.innerHTML =- 1
+                    count -= 1;
+                    countElement.innerHTML = count; 
                 }
-;
-            })
+            });
 
         }); 
     });
