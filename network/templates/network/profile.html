@@ -9,11 +9,15 @@
         <h4>Following: {{ following.count }}</h4>
         <h4>Followers:  {{ followers.count }}</h4>
     </div>
+    {%if user.is_authenticated%}
     {%if post.poster == user %}
 
     {%else%}
-    <button type="submit"class=" ml-3 btn btn-primary" id="follow" value={{ post.poster }}>Follow</button>
+    <button type="submit"class=" ml-3 btn btn-primary" id="follow" value= {{ profile.username }}>Follow</button>
     {% endif %}
+    {%else%}
+    <div class = "ml-3">Sign in or sign up to like posts and follow your friends!</div>
+    {%endif%}
     <br>
 
     {% for post in page_obj %}

@@ -141,6 +141,16 @@ def edit_posts(request, post_id):
             return JsonResponse(response_data)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data"}, status=400)
+    
+
+def like_status(request, post_id):
+    if request.user.is_authenticated:
+        liker = request.user
+        post = get_object_or_404(Post, pk=post_id)
+        existing_like = Like.objects.filter(post_liked=post, liker=liker).exists()
+        return JsonResponse({"liked": existing_like})
+    else:
+        return JsonResponse({"liked": False})
 
 def like(request, post_id):
     if request.method == "POST":
@@ -159,18 +169,27 @@ def like(request, post_id):
             return JsonResponse({"message": "like added"})
     elif json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON data"}, status=400)
+    
+def follow_status(request, post_poster):
+    if request.user.is_authenticated:
+        following = request.user
+        followed = User.objects.get(username=post_poster)
+        existing_follower = Following.objects.filter(user_following=following, user_followed=followed).exists()
+        return JsonResponse({"following": existing_follower})
+    else:
+        return JsonResponse({"following": False})
 
-def follow(request, user_followed):
+def follow(request, post_poster):
     if request.method == "POST":
-        follower = request.user
-        followed = user_followed
-        existing_follower = Following.objects.filter(user_follower=follower, user_followed=followed).first()
+        following = request.user
+        followed = User.objects.get(username=post_poster)
+        existing_follower = Following.objects.filter(user_following=following, user_followed=followed.id).first()
         if existing_follower:
             existing_follower.delete()
             return JsonResponse({"message":"unfollowed"})
         else:
             new_follow= Following(
-                user_follower=follower,
+                user_following=following,
                 user_followed=followed
             )
             new_follow.save()

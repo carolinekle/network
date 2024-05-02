@@ -11,14 +11,32 @@ document.addEventListener('DOMContentLoaded', function() {
         if(parts.length == 2) return parts.pop().split(';').shift();
     }
 
-    followButton.addEventListener('click', () => {
-        let user_followed = this.value
+    function followStatus() {
+        let post_poster = followButton.value;
+        fetch(`/follow_status/${post_poster}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.following) {
+                    followButton.innerHTML = 'Unfollow';
+                } else {
+                    followButton.innerHTML = 'Follow';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching follow status:', error);
+            });
+    }
 
-        fetch(`/follow/${user_followed}`, {
+    window.addEventListener('load', followStatus);
+
+    followButton.addEventListener('click', () => {
+        let post_poster = followButton.value
+        console.log(post_poster + " is followed")
+        fetch(`/follow/${post_poster}`, {
             method: 'POST',
             headers: {"Content-type": "application/json", "X-CSRFToken": getCookie("csrftoken")},
             body: JSON.stringify({
-                user_followed: user_followed
+                post_poster: post_poster
             }),
             
         })
@@ -27,8 +45,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (result.message === 'followed') {
                 followButton.innerHTML = 'Unfollow';
-                //add 
-
             } else if (result.message === 'unfollowed') {
                 followButton.innerHTML = 'Follow';
             }
@@ -36,11 +52,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }); 
 
+    function likeStatus() {
+        let likeButton = document.querySelector(`.like_${post_id}`).value;
+        fetch(`/like_status/${post_id}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.liked) {
+                    likeButton.innerHTML = 'Unlike';
+                } else {
+                    likeButton.innerHTML = 'Like';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching like status:', error);
+            });
+    }
 
+    window.addEventListener('load', likeStatus);
 
     likeButtons.forEach(btn =>{ 
         btn.addEventListener('click', function (){
-             
             let post_id = this.value
 
             fetch(`/like/${post_id}`, {
@@ -53,16 +84,16 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(result => {
-                let button = document.querySelector(`.like_${post_id}`);
+                let likeButton = document.querySelector(`.like_${post_id}`);
                 let countElement = document.querySelector(`.like_count_${post_id}`);
                 let count = parseInt(countElement.innerHTML); 
             
                 if (result.message === 'like added') {
-                    button.innerHTML = 'Unlike';
+                    likeButton.innerHTML = 'Unlike';
                     count += 1;
                     countElement.innerHTML = count; 
                 } else if (result.message === 'like removed') {
-                    button.innerHTML = 'Like';
+                    likeButton.innerHTML = 'Like';
                     count -= 1;
                     countElement.innerHTML = count; 
                 }
