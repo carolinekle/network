@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }); 
 
-    function likeStatus() {
-        let likeButton = document.querySelector(`.like_${post_id}`).value;
+    function likeStatus(post_id) {
+        let likeButton = document.querySelector(`.like_${post_id}`);
         fetch(`/like_status/${post_id}`)
             .then(response => response.json())
             .then(result => {
@@ -67,40 +67,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error fetching like status:', error);
             });
     }
-
-    window.addEventListener('load', likeStatus);
-
-    likeButtons.forEach(btn =>{ 
-        btn.addEventListener('click', function (){
-            let post_id = this.value
-
+    
+    likeButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+            let post_id = this.value;
             fetch(`/like/${post_id}`, {
                 method: 'POST',
                 headers: {"Content-type": "application/json", "X-CSRFToken": getCookie("csrftoken")},
                 body: JSON.stringify({
                     post_liked: post_id
                 }),
-                
             })
             .then(response => response.json())
             .then(result => {
                 let likeButton = document.querySelector(`.like_${post_id}`);
                 let countElement = document.querySelector(`.like_count_${post_id}`);
-                let count = parseInt(countElement.innerHTML); 
-            
+                let count = parseInt(countElement.innerHTML);
                 if (result.message === 'like added') {
                     likeButton.innerHTML = 'Unlike';
                     count += 1;
-                    countElement.innerHTML = count; 
+                    countElement.innerHTML = count;
                 } else if (result.message === 'like removed') {
                     likeButton.innerHTML = 'Like';
                     count -= 1;
-                    countElement.innerHTML = count; 
+                    countElement.innerHTML = count;
                 }
+            })
+            .catch(error => {
+                console.error('Error liking/unliking:', error);
             });
-
-        }); 
+        });
     });
+    
+    likeButtons.forEach(btn => {
+        let post_id = btn.value;
+        likeStatus(post_id);
+    });
+
 
     save.addEventListener('click', function(){
 
