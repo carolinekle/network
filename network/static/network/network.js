@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const save = document.querySelector('#edit')
     const likeButtons = document.querySelectorAll('#like')
     const followButton = document.querySelector('#follow')
+    const deleteButtons = document.querySelectorAll('#delete')
 
     function getCookie(name){
         const value = `; ${document.cookie}`;
@@ -11,15 +12,37 @@ document.addEventListener('DOMContentLoaded', function() {
         if(parts.length == 2) return parts.pop().split(';').shift();
     }
 
+    deleteButtons.forEach(btn => {
+        btn.addEventListener('click', function(){
+            let post_id = this.value 
+            console.log( this.value)
+
+            fetch(`delete_post/${post_id}`)
+            .then(response => response.json())
+            .then(result => {
+                if(result.message === "post deleted"){
+                    let toRemove = document.querySelector(`.post_${post_id}`);
+                    toRemove.style.animationPlayState = 'running';
+                    btn.addEventListener('animationend', () => {
+                        alert("Deleted!");
+                    });
+                }
+                else{
+                    alert("Something has gone wrong. Contact your administrator")
+                }
+            })
+        })
+    })
+
     function followStatus() {
         let post_poster = followButton.value;
         fetch(`/follow_status/${post_poster}`)
             .then(response => response.json())
             .then(result => {
                 if (result.following) {
-                    followButton.innerHTML = 'Unfollow';
+                    followButton.innerHTML = 'Unfollow'
                 } else {
-                    followButton.innerHTML = 'Follow';
+                    followButton.innerHTML = 'Follow'
                 }
             })
             .catch(error => {
@@ -31,6 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     followButton.addEventListener('click', () => {
         let post_poster = followButton.value
+        let followCountElement = document.querySelector('#follower-count')
+        let followCount = parseInt(followCountElement.innerHTML)
         console.log(post_poster + " is followed")
         fetch(`/follow/${post_poster}`, {
             method: 'POST',
@@ -44,9 +69,14 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(result => {
 
             if (result.message === 'followed') {
-                followButton.innerHTML = 'Unfollow';
+                followButton.innerHTML = 'Unfollow'
+                followCount += 1
+                followCountElement.innerHTML = followCount
+
             } else if (result.message === 'unfollowed') {
-                followButton.innerHTML = 'Follow';
+                followButton.innerHTML = 'Follow'
+                followCount -= 1
+                followCountElement.innerHTML = followCount 
             }
         });
 
@@ -58,9 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(result => {
                 if (result.liked) {
-                    likeButton.innerHTML = 'Unlike';
+                    likeButton.innerHTML = 'Unlike'
                 } else {
-                    likeButton.innerHTML = 'Like';
+                    likeButton.innerHTML = 'Like'
                 }
             })
             .catch(error => {
@@ -80,17 +110,17 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(result => {
-                let likeButton = document.querySelector(`.like_${post_id}`);
-                let countElement = document.querySelector(`.like_count_${post_id}`);
-                let count = parseInt(countElement.innerHTML);
+                let likeButton = document.querySelector(`.like_${post_id}`)
+                let countElement = document.querySelector(`.like_count_${post_id}`)
+                let count = parseInt(countElement.innerHTML)
                 if (result.message === 'like added') {
-                    likeButton.innerHTML = 'Unlike';
-                    count += 1;
+                    likeButton.innerHTML = 'Unlike'
+                    count += 1
                     countElement.innerHTML = count;
                 } else if (result.message === 'like removed') {
-                    likeButton.innerHTML = 'Like';
-                    count -= 1;
-                    countElement.innerHTML = count;
+                    likeButton.innerHTML = 'Like'
+                    count -= 1
+                    countElement.innerHTML = count
                 }
             })
             .catch(error => {
@@ -100,8 +130,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     likeButtons.forEach(btn => {
-        let post_id = btn.value;
-        likeStatus(post_id);
+        let post_id = btn.value
+        likeStatus(post_id)
     });
 
 

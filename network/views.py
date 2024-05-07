@@ -141,6 +141,17 @@ def edit_posts(request, post_id):
             return JsonResponse(response_data)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data"}, status=400)
+        
+def delete_post(request, post_id):
+    if request.method == "GET":
+        try:
+            deleted = get_object_or_404(Post, pk=post_id)
+            deleted.delete()
+            return JsonResponse({"message":"post deleted"})
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Post unavailable. Try again"}, status=400)
+    elif json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON data"}, status=400)
     
 
 def like_status(request, post_id):
