@@ -1,4 +1,6 @@
 
+
+
 document.addEventListener('DOMContentLoaded', function() {
 
     const save = document.querySelector('#edit')
@@ -12,19 +14,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if(parts.length == 2) return parts.pop().split(';').shift();
     }
 
+    if(deleteButtons){
     deleteButtons.forEach(btn => {
         btn.addEventListener('click', function(){
             let post_id = this.value 
-            console.log( this.value)
 
             fetch(`delete_post/${post_id}`)
             .then(response => response.json())
             .then(result => {
                 if(result.message === "post deleted"){
                     let toRemove = document.querySelector(`.post_${post_id}`);
-                    toRemove.style.animationPlayState = 'running';
-                    btn.addEventListener('animationend', () => {
-                        alert("Deleted!");
+                    toRemove.style.animationPlayState = 'running'; 
+                    toRemove.addEventListener('animationend', () => {
+                        toRemove.remove()
                     });
                 }
                 else{
@@ -33,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             })
         })
     })
+}
 
     function followStatus() {
         let post_poster = followButton.value;
@@ -52,11 +55,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('load', followStatus);
 
+
+
+    if(followButton){
+
     followButton.addEventListener('click', () => {
         let post_poster = followButton.value
         let followCountElement = document.querySelector('#follower-count')
         let followCount = parseInt(followCountElement.innerHTML)
-        console.log(post_poster + " is followed")
         fetch(`/follow/${post_poster}`, {
             method: 'POST',
             headers: {"Content-type": "application/json", "X-CSRFToken": getCookie("csrftoken")},
@@ -78,9 +84,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 followCount -= 1
                 followCountElement.innerHTML = followCount 
             }
-        });
+        })
 
-    }); 
+    })
+}
+
+    if(likeButtons){
 
     function likeStatus(post_id) {
         let likeButton = document.querySelector(`.like_${post_id}`);
@@ -128,12 +137,15 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
     
     likeButtons.forEach(btn => {
         let post_id = btn.value
         likeStatus(post_id)
     });
+    }
 
+    if(save){
 
     save.addEventListener('click', function(){
 
@@ -143,6 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let text = document.querySelector(`#new_text`).value
         let content = document.querySelector(`#content_${post_id}`)
         let editedDate = document.querySelector(`#edited_date_${post_id}`)
+        
 
         let updatedDateTime = new Date();  
         let formattedDateTime = updatedDateTime.toLocaleString('en-US', {
@@ -153,6 +166,8 @@ document.addEventListener('DOMContentLoaded', function() {
             minute: 'numeric',
             hour12: true
         });
+
+
 
         fetch(`/edit_posts/${post_id}`, {
         method: 'POST',
@@ -170,4 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
 
     })
+
+}
 })

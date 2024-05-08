@@ -21,7 +21,7 @@
     <br>
 
     {% for post in page_obj %}
-    <div class="mx-3 my-3 d-flex flex-column post">
+    <div class="mx-3 my-3 d-flex flex-column post post_{{post.id}}">
         <a href="{% url 'profile' post.poster %}"><h4>{{ post.poster }}</h4></a>
         <p id ="content_{{ post.id }}">{{ post.text }}</p>
         <small>{{ post.created }}</small>
