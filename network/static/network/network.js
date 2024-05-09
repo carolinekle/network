@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const likeButtons = document.querySelectorAll('#like')
     const followButton = document.querySelector('#follow')
     const deleteButtons = document.querySelectorAll('#delete')
+    const bootstrap = document.querySelector('.modal-backdrop')
 
     function getCookie(name){
         const value = `; ${document.cookie}`;
@@ -143,6 +144,10 @@ document.addEventListener('DOMContentLoaded', function() {
         let post_id = btn.value
         likeStatus(post_id)
     });
+    }
+
+    if(bootstrap){
+        bootstrap.style.display="none"
     }
 
     if(save){

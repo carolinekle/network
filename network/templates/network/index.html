@@ -11,6 +11,8 @@
 
     </form>
     {% endif %}
+
+    
     <br>
     <h2 class="mx-3">Your posts</h2>
         {% for post in page_obj %}
@@ -30,23 +32,24 @@
             
 
 
-            <div class="modal fade" id="edited_{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal" id="edited_{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document" style="z-index: 1060 !important;">
                   <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLongTitle"> {{ post.poster }}</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <textarea rows="5" class="modal-body" id="new_text">{{ post.text }}</textarea>
-                    <div class="modal-footer">
-                      
-                      <button type="submit" value= {{ post.id }} id="edit" class="btn btn-primary">Save Changes</button>
-                    </div>
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">{{ post.poster }}</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                      </div>
+                      <div class="modal-body">
+                          <textarea rows="5" class="modal-body" id="new_text">{{ post.text }}</textarea>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="submit" value="{{ post.id }}" id="edit" class="btn btn-primary">Save Changes</button>
+                      </div>
                   </div>
-                </div>
-            </div>
+              </div>
+          </div>
 
             {% endif %}
             {%if user.is_authenticated %}

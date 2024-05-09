@@ -3,13 +3,18 @@ div.post{
     border-color: gray;
     border-radius: 3px;
     padding: 1rem;
-    animation-name: hide;
+    animation-name: pop;
     animation-duration: 2s;
     animation-fill-mode: forwards;
     animation-play-state: paused;
+    position: relative;
 }
 
-@keyframes hide {
+.modal-backdrop {
+  position: relative !important; 
+}
+
+@keyframes pop {
   0% {
       opacity: 1;
       height: 100%;
