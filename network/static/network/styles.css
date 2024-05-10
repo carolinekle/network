@@ -14,6 +14,35 @@ div.post{
   position: relative !important; 
 }
 
+.large-font {
+  font-size: x-large;
+}
+
+.top-20 {
+  position: relative;
+  top: 20vh;
+}
+
+ion-icon.active {
+  animation: like 0.5s 1;
+  fill: red;
+  stroke: none;
+}
+
+ion-icon {
+  fill: transparent;
+  stroke: black;
+  stroke-width: 20;
+  transition: all 0.5s;
+}
+
+@keyframes like {
+  0% { transform: scale(1); }
+  90% { transform: scale(1.2); }
+  100% { transform: scale(1.1); }
+}
+
+
 @keyframes pop {
   0% {
       opacity: 1;
@@ -48,12 +77,5 @@ textarea {
     resize: none;
   }
 
-  #heart {
-    color: grey;  
-    font-size: 50px;
-  }
-  
-  #heart.red {
-    color: red;
-  }
+
 

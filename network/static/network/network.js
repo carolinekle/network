@@ -93,14 +93,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if(likeButtons){
 
     function likeStatus(post_id) {
-        let likeButton = document.querySelector(`.like_${post_id}`);
+        let icon = document.querySelector(`.like_${post_id}`);
         fetch(`/like_status/${post_id}`)
             .then(response => response.json())
             .then(result => {
                 if (result.liked) {
-                    likeButton.innerHTML = 'Unlike'
+                    icon.classList.toggle('active');
                 } else {
-                    likeButton.innerHTML = 'Like'
+                    icon.classList.toggle('active');
                 }
             })
             .catch(error => {

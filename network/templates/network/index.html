@@ -53,10 +53,18 @@
 
             {% endif %}
             {%if user.is_authenticated %}
-            <div class = "mt-1"> <button type="submit" value={{post.id}} id="like" class="btn btn-danger mr-2 like_{{ post.id }}">Like</button><span value = {{post.likes}} class = "like_count_{{post.id}}">{{ post.likes }} </span></div>
-            {%endif%}
-            <div>
+            <div class = "mt-1 d-flex"> 
+                <div value={{post.id}} class='d-flex flex-column mr-2 like_{{ post.id }}' id="like">
+                    <ion-icon class = "heart_{{ post.id }}" name="heart" size="small">
+                      <div class='red-bg'></div>
+                    </ion-icon>
+                  </div>
+                  {%endif%}
+                {% comment %} <button type="submit" value={{post.id}} id="like" class="btn btn-danger mr-2 like_{{ post.id }}">Like</button> {% endcomment %}
+                <span value = {{post.likes}} class = "like_count_{{post.id}}">{{ post.likes }} </span>
             </div>
+
+
         </div>
 
      {% endfor %}
