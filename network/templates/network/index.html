@@ -22,7 +22,7 @@
             <small>{{ post.created }}</small>
             <small class="edited_{{ post.id }}">
                 {% if post.edited %}
-                {{post.edited|date:'Y, m, d, H:i' }}
+                {{post.edited|date:'M d, Y, H:i a' }}
                 {% endif %}
             </small>
             {% if post.poster == user %}
