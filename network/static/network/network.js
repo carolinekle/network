@@ -148,26 +148,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if(save){
 
     save.addEventListener('click', function(){
-
-        
         let post_id = this.value
-
         let text = document.querySelector(`#new_text`).value
         let content = document.querySelector(`#content_${post_id}`)
-        let editedDate = document.querySelector(`#edited_date_${post_id}`)
+        let editedDate = document.querySelector(`.edited_${post_id}`)
         
-
- /*        let updatedDateTime = new Date();  
-        let formattedDateTime = updatedDateTime.toLocaleString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true
-        }); */
-
-
 
         fetch(`/edit_posts/${post_id}`, {
         method: 'POST',
@@ -179,10 +164,18 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(result => {
-            console.log(result)
-            content.innerHTML = result.text, 
-            editedDate.innerHTML = result.updated
+            console.log(result);
+            console.log(editedDate)
+            if (content && editedDate) { 
+                content.innerHTML = result.text;
+                editedDate.innerHTML = result.updated;
+            } else {
+                console.error("Content or editedDate element is null.");
+            }
         })
+        .catch(error => {
+            console.error("Error:", error);
+        });
 
     })
 

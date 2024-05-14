@@ -13,9 +13,6 @@ div.post{
 .modal-backdrop {
   position: relative !important; 
 }
-.modal{
-  z-index:3000;
-}
 
 .large-font {
   font-size: x-large;
