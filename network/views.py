@@ -129,14 +129,15 @@ def edit_posts(request, post_id):
             data = json.loads(request.body)
             if data.get("text") is not None:
                 edited.text = data["text"]
-            if data.get("updated") is not None:
-                updated_datetime = timezone.now() 
+                updated_datetime = timezone.now()
                 edited.updated = updated_datetime
+            print(edited.updated)  # Check the value before saving
             edited.save()
+            print(edited.updated)
             response_data = {
                 "message": "Change successful",
                 "text": edited.text,
-                "updated": edited.updated.strftime('%d %b %Y %H:%M')  
+                "updated": edited.updated
             }
             return JsonResponse(response_data)
         except json.JSONDecodeError:

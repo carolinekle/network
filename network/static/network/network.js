@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const likeButtons = document.querySelectorAll('#like')
     const followButton = document.querySelector('#follow')
     const deleteButtons = document.querySelectorAll('#delete')
-    const bootstrap = document.querySelector('.modal-backdrop')
+
 
     function getCookie(name){
         const value = `; ${document.cookie}`;
@@ -93,13 +93,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if(likeButtons){
 
     function likeStatus(post_id) {
-        let icon = document.querySelector(`.like_${post_id}`);
+        let icon = document.querySelector(`.heart_${post_id}`);
+        console.log(post_id + " and " +  icon)
         fetch(`/like_status/${post_id}`)
             .then(response => response.json())
             .then(result => {
                 if (result.liked) {
-                    icon.classList.toggle('active');
-                } else {
                     icon.classList.toggle('active');
                 }
             })
@@ -110,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     likeButtons.forEach(btn => {
         btn.addEventListener('click', function () {
-            let post_id = this.value;
+            let post_id = this.getAttribute("data-post-id");
             fetch(`/like/${post_id}`, {
                 method: 'POST',
                 headers: {"Content-type": "application/json", "X-CSRFToken": getCookie("csrftoken")},
@@ -120,17 +119,17 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(result => {
-                let likeButton = document.querySelector(`.like_${post_id}`)
+                let icon = document.querySelector(`.heart_${post_id}`)
                 let countElement = document.querySelector(`.like_count_${post_id}`)
                 let count = parseInt(countElement.innerHTML)
                 if (result.message === 'like added') {
-                    likeButton.innerHTML = 'Unlike'
+                    icon.classList.toggle('active');
                     count += 1
-                    countElement.innerHTML = count;
+                    countElement.innerHTML=count
                 } else if (result.message === 'like removed') {
-                    likeButton.innerHTML = 'Like'
+                    icon.classList.toggle('active');
                     count -= 1
-                    countElement.innerHTML = count
+                    countElement.innerHTML=count
                 }
             })
             .catch(error => {
@@ -141,13 +140,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
     likeButtons.forEach(btn => {
-        let post_id = btn.value
+        let post_id = btn.getAttribute("data-post-id")
         likeStatus(post_id)
     });
-    }
-
-    if(bootstrap){
-        bootstrap.style.display="none"
     }
 
     if(save){
@@ -162,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let editedDate = document.querySelector(`#edited_date_${post_id}`)
         
 
-        let updatedDateTime = new Date();  
+ /*        let updatedDateTime = new Date();  
         let formattedDateTime = updatedDateTime.toLocaleString('en-US', {
             month: 'short',
             day: 'numeric',
@@ -170,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
             hour: 'numeric',
             minute: 'numeric',
             hour12: true
-        });
+        }); */
 
 
 
@@ -178,15 +173,15 @@ document.addEventListener('DOMContentLoaded', function() {
         method: 'POST',
         headers: {"Content-type": "application/json", "X-CSRFToken": getCookie("csrftoken")},
         body: JSON.stringify({
-            text: text,
-            updated: formattedDateTime
+            text: text
         }),
 
         })
         .then(response => response.json())
         .then(result => {
+            console.log(result)
             content.innerHTML = result.text, 
-            editedDate.innerHTML = result.edited
+            editedDate.innerHTML = result.updated
         })
 
     })
