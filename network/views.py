@@ -22,6 +22,7 @@ def index(request):
 
     page_number = request.GET.get("page")
     page_obj = posts.get_page(page_number)
+    
 
     return render(request, "network/index.html",{
         "posts":posts,
@@ -44,7 +45,8 @@ def profile(request, post_poster):
         "profile":poster,
         "page_obj": page_obj,
         "following":following,
-        "followers":followers
+        "followers":followers,
+        
     })
 
 
@@ -131,9 +133,7 @@ def edit_posts(request, post_id):
                 edited.text = data["text"]
                 updated_datetime = timezone.now()
                 edited.updated = updated_datetime
-            print(edited.updated)  # Check the value before saving
             edited.save()
-            print(edited.updated)
             response_data = {
                 "message": "Change successful",
                 "text": edited.text,

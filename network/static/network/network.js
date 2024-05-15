@@ -3,7 +3,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    const save = document.querySelector('#edit')
+    const save = document.querySelectorAll('#edit')
     const likeButtons = document.querySelectorAll('#like')
     const followButton = document.querySelector('#follow')
     const deleteButtons = document.querySelectorAll('#delete')
@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function likeStatus(post_id) {
         let icon = document.querySelector(`.heart_${post_id}`);
+        console.log("heard")
         fetch(`/like_status/${post_id}`)
             .then(response => response.json())
             .then(result => {
@@ -146,13 +147,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if(save){
 
-    save.addEventListener('click', function(){
+    save.forEach(btn => {
+    btn.addEventListener('click', function(){
         let post_id = this.value
-        let text = document.querySelector(`#new_text`).value
+        console.log("heard")
+        let text = document.querySelector(`#new_text_${post_id}`).value
         let content = document.querySelector(`#content_${post_id}`)
         let editedDate = document.querySelector(`.edited_${post_id}`)
         
-
         fetch(`/edit_posts/${post_id}`, {
         method: 'POST',
         headers: {"Content-type": "application/json", "X-CSRFToken": getCookie("csrftoken")},
@@ -165,7 +167,9 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(result => {
             if (content && editedDate) { 
                 content.innerHTML = result.text;
-                editedDate.innerHTML = result.updated;
+                let updatedDate = new Date(result.updated);
+                let formattedDate = updatedDate.toLocaleString('en-US');
+                editedDate.innerHTML = `Updated on ${formattedDate}`;
             } else {
                 console.error("Content or editedDate element is null.");
             }
@@ -176,5 +180,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     })
 
+})
 }
 })
