@@ -94,7 +94,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function likeStatus(post_id) {
         let icon = document.querySelector(`.heart_${post_id}`);
-        console.log(post_id + " and " +  icon)
         fetch(`/like_status/${post_id}`)
             .then(response => response.json())
             .then(result => {
@@ -164,8 +163,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(result => {
-            console.log(result);
-            console.log(editedDate)
             if (content && editedDate) { 
                 content.innerHTML = result.text;
                 editedDate.innerHTML = result.updated;
